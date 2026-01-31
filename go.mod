@@ -1,4 +1,4 @@
-module fire
+module gofire
 
 go 1.25.6
 
