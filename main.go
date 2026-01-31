@@ -20,7 +20,10 @@ type Config struct {
 	Flicker   bool
 }
 
-var styles []lipgloss.Style
+var (
+	styles     []lipgloss.Style
+	styleCache []string
+)
 
 var palettes = map[string][]string{
 	"red": {
@@ -141,11 +144,11 @@ func (m model) View() string {
 			idx := y*m.width + x
 			heat := m.firePixels[idx]
 
-			char := " "
 			if heat > 0 {
-				char = m.config.Char
+				s.WriteString(styleCache[heat])
+			} else {
+				s.WriteString(" ") // No ANSI codes needed for empty space
 			}
-			s.WriteString(styles[heat].Render(char))
 		}
 		if y < m.height-2 {
 			s.WriteRune('\n')
@@ -207,20 +210,27 @@ func main() {
 	charFlag := flag.String("char", "█", "The character used to draw the fire")
 	speedFlag := flag.Duration("speed", 50*time.Millisecond, "Tick speed (e.g. 30ms, 100ms)")
 	paletteFlag := flag.String("palette", "red", "Color palette: red, green, blue, gray")
-	decayFlag := flag.Float64("decay", 6.0, "Heat decay intencity (higher value, shorter flame)")
+	decayFlag := flag.Float64("decay", 6.0, "Heat decay intensity (higher value, shorter flame)")
 	noFlicker := flag.Bool("no-flicker", false, "Disable flicker")
 
 	flag.Parse()
 
-	isFlickerEnabled := true
-	if *noFlicker {
-		isFlickerEnabled = false
-	}
+	isFlickerEnabled := !*noFlicker
 
 	colors, ok := palettes[*paletteFlag]
 	if !ok {
-		fmt.Printf("Unknown palette '%s'. Available: red", *paletteFlag)
+		var available []string
+		for k := range palettes {
+			available = append(available, k)
+		}
+		fmt.Printf("Unknown palette '%s'. Available: %s\n", *paletteFlag, strings.Join(available, ", "))
 		os.Exit(1)
+	}
+
+	styleCache = make([]string, len(colors))
+	for i, c := range colors {
+		// Pre-render the character into the style immediately
+		styleCache[i] = lipgloss.NewStyle().Foreground(lipgloss.Color(c)).Render(*charFlag)
 	}
 
 	styles = make([]lipgloss.Style, len(colors))
