@@ -99,23 +99,36 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "q", "ctrl+c":
 			return m, tea.Quit
+
 		case "h", "left":
 			m.wind--
 		case "l", "right":
 			m.wind++
-		case "0", " ":
-			m.wind = 0
+
 		case "f":
 			m.config.Flicker = !m.config.Flicker
+
 		case "k", "up":
 			m.config.Decay--
+			if m.config.Decay < 0 {
+				m.config.Decay = 0
+			}
 		case "j", "down":
 			m.config.Decay++
+
 		case "]":
 			m.config.TickSpeed -= 10 * time.Millisecond
+			if m.config.TickSpeed < 1*time.Millisecond {
+				m.config.TickSpeed = 1 * time.Millisecond
+			}
 		case "[":
 			m.config.TickSpeed += 10 * time.Millisecond
 		case "=":
+			m.config.TickSpeed = 40 * time.Millisecond
+
+		case "0", " ": // Reset config
+			m.wind = 0
+			m.config.Decay = 6.0
 			m.config.TickSpeed = 40 * time.Millisecond
 		}
 
@@ -231,11 +244,6 @@ func main() {
 	for i, c := range colors {
 		// Pre-render the character into the style immediately
 		styleCache[i] = lipgloss.NewStyle().Foreground(lipgloss.Color(c)).Render(*charFlag)
-	}
-
-	styles = make([]lipgloss.Style, len(colors))
-	for i, c := range colors {
-		styles[i] = lipgloss.NewStyle().Foreground(lipgloss.Color(c))
 	}
 
 	cfg := Config{
