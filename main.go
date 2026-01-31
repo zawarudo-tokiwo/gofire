@@ -20,7 +20,6 @@ type Config struct {
 
 var styles []lipgloss.Style
 
-// TODO: Add more palettes
 var palettes = map[string][]string{
 	"red": {
 		"#070707", "#1f0707", "#2f0907", "#470907", "#570f07", "#671707", "#771707",
@@ -29,6 +28,30 @@ var palettes = map[string][]string{
 		"#ff971f", "#ff9f1f", "#ffa727", "#ffaf27", "#ffb72f", "#ffbf2f", "#ffc737",
 		"#ffcf37", "#ffd73f", "#ffdf3f", "#ffe747", "#ffef4f", "#fff75f", "#ffff7f",
 		"#ffffaf", "#ffffff",
+	},
+	"blue": {
+		"#000000", "#000614", "#000b21", "#001336", "#001842", "#001d52", "#002466",
+		"#002b7a", "#00328f", "#0039a3", "#0040b8", "#0047cc", "#004de0", "#0054f5",
+		"#0059ff", "#004ec7", "#0044ad", "#003a94", "#00307a", "#002661", "#001c47",
+		"#1a3c8e", "#335cb5", "#4d7ddd", "#669df4", "#80beff", "#99ceff", "#b3deff",
+		"#cceeff", "#e6faff", "#f0fbff", "#f5fdff", "#faffff", "#fbffff", "#fdffff",
+		"#feffff", "#ffffff",
+	},
+	"green": {
+		"#000000", "#051405", "#0a210a", "#0f360f", "#144214", "#1a571a", "#216b21",
+		"#267a26", "#2d8c2d", "#339e33", "#3aaf3a", "#42c242", "#4bd44b", "#54e654",
+		"#5df75d", "#66ff66", "#5ce65c", "#52cc52", "#47b347", "#3d993d", "#338033",
+		"#47a347", "#5cc75c", "#70eb70", "#85ff85", "#99ff99", "#adffad", "#c2ffc2",
+		"#d6ffd6", "#ebffeb", "#f0fff0", "#f5fff5", "#fafffa", "#fbfffb", "#fdfffd",
+		"#fefffe", "#ffffff",
+	},
+	"gray": {
+		"#000000", "#0a0a0a", "#141414", "#1e1e1e", "#282828", "#323232", "#3c3c3c",
+		"#464646", "#505050", "#5a5a5a", "#646464", "#6e6e6e", "#787878", "#828282",
+		"#8c8c8c", "#969696", "#909090", "#888888", "#808080", "#787878", "#707070",
+		"#808080", "#909090", "#a0a0a0", "#b0b0b0", "#c0c0c0", "#d0d0d0", "#dcdcdc",
+		"#e6e6e6", "#f0f0f0", "#f5f5f5", "#f8f8f8", "#fafafa", "#fcfcfc", "#fdfdfd",
+		"#fefefe", "#ffffff",
 	},
 }
 
