@@ -1,6 +1,6 @@
 # 🔥 gofire
 > **Fire simulation for the terminal.**
-![gofire_preview_gif](https://media.giphy.com/media/ToNeUURXHkED93Q1bF/giphy.gif)
+![gofire_preview_gif](gofire_preview.gif)
 
 `gofire` is an implementation of the **Doom Fire Algorithm** for terminal, written in Go using the [Bubble Tea](https://github.com/charmbracelet/bubbletea) TUI framework and [Lip Gloss](https://github.com/charmbracelet/lipgloss) for style definitions.
 ## Features
