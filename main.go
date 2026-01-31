@@ -16,6 +16,8 @@ type Config struct {
 	Char      string
 	Palette   string
 	TickSpeed time.Duration
+	Decay     float64
+	Flicker   bool
 }
 
 var styles []lipgloss.Style
@@ -98,8 +100,20 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.wind--
 		case "l", "right":
 			m.wind++
-		case "0", "space":
+		case "0", " ":
 			m.wind = 0
+		case "f":
+			m.config.Flicker = !m.config.Flicker
+		case "k", "up":
+			m.config.Decay--
+		case "j", "down":
+			m.config.Decay++
+		case "]":
+			m.config.TickSpeed -= 10 * time.Millisecond
+		case "[":
+			m.config.TickSpeed += 10 * time.Millisecond
+		case "=":
+			m.config.TickSpeed = 40 * time.Millisecond
 		}
 
 	case tea.WindowSizeMsg:
@@ -166,9 +180,12 @@ func (m *model) spreadFire() {
 				continue
 			}
 
-			decay := int(m.rnd.Float64() * 6.0) // Cool pixel by a value from 0 to 6
+			decay := int(m.rnd.Float64() * m.config.Decay) // Cool pixel by a value from 0 to 6
 
-			randomFlicker := int(m.rnd.Float64()*3.0) - 1
+			randomFlicker := 0
+			if m.config.Flicker {
+				randomFlicker = int(m.rnd.Float64()*3.0) - 1
+			}
 			totalWind := randomFlicker + m.wind
 			targetX := x + totalWind
 
@@ -189,9 +206,16 @@ func (m *model) spreadFire() {
 func main() {
 	charFlag := flag.String("char", "█", "The character used to draw the fire")
 	speedFlag := flag.Duration("speed", 50*time.Millisecond, "Tick speed (e.g. 30ms, 100ms)")
-	paletteFlag := flag.String("palette", "red", "Color palette: red (will add more in the future)")
+	paletteFlag := flag.String("palette", "red", "Color palette: red, green, blue, gray")
+	decayFlag := flag.Float64("decay", 6.0, "Heat decay intencity (higher value, shorter flame)")
+	noFlicker := flag.Bool("no-flicker", false, "Disable flicker")
 
 	flag.Parse()
+
+	isFlickerEnabled := true
+	if *noFlicker {
+		isFlickerEnabled = false
+	}
 
 	colors, ok := palettes[*paletteFlag]
 	if !ok {
@@ -208,6 +232,8 @@ func main() {
 		Char:      *charFlag,
 		Palette:   *paletteFlag,
 		TickSpeed: *speedFlag,
+		Decay:     *decayFlag,
+		Flicker:   isFlickerEnabled,
 	}
 
 	p := tea.NewProgram(initialModel(cfg), tea.WithAltScreen(), tea.WithMouseCellMotion())
