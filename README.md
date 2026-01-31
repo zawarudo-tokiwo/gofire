@@ -14,12 +14,6 @@
 
 * **Go 1.22+** (For the `range integer` syntax used in the code).
 
-### Install via Go
-
-```bash
-go install https://github.com/zawarudo-tokiwo/gofire@latest
-```
-
 ### Build from Source
 
 ```bash
