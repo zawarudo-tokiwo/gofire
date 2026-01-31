@@ -36,6 +36,7 @@ type model struct {
 	width      int
 	height     int
 	firePixels []int
+	wind       int
 	rnd        *rand.Rand
 	config     Config
 }
@@ -45,6 +46,7 @@ func initialModel(cfg Config) model {
 		width:      0,
 		height:     0,
 		firePixels: []int{},
+		wind:       0,
 		rnd:        rand.New(rand.NewSource(time.Now().UnixNano())),
 		config:     cfg,
 	}
@@ -69,6 +71,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "q", "ctrl+c":
 			return m, tea.Quit
+		case "h", "left":
+			m.wind--
+		case "l", "right":
+			m.wind++
+		case "0", "space":
+			m.wind = 0
 		}
 
 	case tea.WindowSizeMsg:
@@ -137,10 +145,20 @@ func (m *model) spreadFire() {
 
 			decay := int(m.rnd.Float64() * 6.0) // Cool pixel by a value from 0 to 6
 
-			targetIndex := (y-1)*m.width + x   // Pixel above
-			newHeat := max(pixelHeat-decay, 0) // LSP suggested to change if statement to this
+			randomFlicker := int(m.rnd.Float64()*3.0) - 1
+			totalWind := randomFlicker + m.wind
+			targetX := x + totalWind
 
-			m.firePixels[targetIndex] = newHeat
+			if targetX < 0 || targetX >= m.width {
+				continue
+			}
+
+			targetIndex := (y-1)*m.width + targetX // Pixel above + wind adjustment
+			newHeat := max(pixelHeat-decay, 0)     // LSP suggested it (heat can't be negative)
+
+			if targetIndex >= 0 && targetIndex < len(m.firePixels) {
+				m.firePixels[targetIndex] = newHeat
+			}
 		}
 	}
 }
