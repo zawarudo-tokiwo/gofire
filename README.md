@@ -54,15 +54,15 @@ You can control the fire in real-time using your keyboard:
 
 | Key                | Action                                          |
 | ------------------ | ----------------------------------------------- |
-| **`h` / `Left**`   | Blow wind to the **Left**                       |
-| **`l` / `Right**`  | Blow wind to the **Right**                      |
-| **`k` / `Up**`     | **Decrease Decay** (Make flames taller/hotter)  |
-| **`j` / `Down**`   | **Increase Decay** (Make flames shorter/cooler) |
-| **`[`**            | **Increase Speed** (Run simulation faster)      |
-| **`]`**            | **Decrease Speed** (Run simulation slower)      |
-| **`f`**            | Toggle **Flicker** effect                       |
-| **`Space` / `0**`  | **Reset** wind and decay settings               |
-| **`q` / `Ctrl+C**` | **Quit**                                        |
+| `h` / `Left`   | Blow wind to the **Left**                       |
+| `l` / `Right`  | Blow wind to the **Right**                      |
+| `k` / `Up`     | **Decrease Decay** (Make flames taller/hotter)  |
+| `j` / `Down`   | **Increase Decay** (Make flames shorter/cooler) |
+| `[`            | **Increase Speed** (Run simulation faster)      |
+| `]`            | **Decrease Speed** (Run simulation slower)      |
+| `f`            | Toggle **Flicker** effect                       |
+| `Space` / `0`  | **Reset** wind and decay settings               |
+| `q` / `Ctrl+C` | **Quit**                                        |
 
 ## 🎨 Palettes
 
