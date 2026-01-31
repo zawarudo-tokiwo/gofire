@@ -244,7 +244,7 @@ func (m *model) spreadFire() {
 func main() {
 	charFlag := flag.String("char", "█", "The character used to draw the fire")
 	speedFlag := flag.Duration("speed", 50*time.Millisecond, "Tick speed (e.g. 30ms, 100ms)")
-	paletteFlag := flag.String("palette", "red", "Color palette: red, green, blue, purple, gray")
+	paletteFlag := flag.String("palette", "red", "Color palette: red, green, blue, purple, gray, tty")
 	decayFlag := flag.Float64("decay", 6.0, "Heat decay intensity (higher value, shorter flame)")
 	noFlicker := flag.Bool("no-flicker", false, "Disable flicker")
 
