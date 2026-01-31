@@ -109,12 +109,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.config.Flicker = !m.config.Flicker
 
 		case "k", "up":
-			m.config.Decay--
+			m.config.Decay -= 0.5
 			if m.config.Decay < 0 {
 				m.config.Decay = 0
 			}
 		case "j", "down":
-			m.config.Decay++
+			m.config.Decay += 0.5
 
 		case "]":
 			m.config.TickSpeed -= 10 * time.Millisecond
@@ -123,8 +123,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "[":
 			m.config.TickSpeed += 10 * time.Millisecond
-		case "=":
-			m.config.TickSpeed = 40 * time.Millisecond
 
 		case "0", " ": // Reset config
 			m.wind = 0
