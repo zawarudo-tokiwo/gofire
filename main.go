@@ -20,12 +20,26 @@ type Config struct {
 	Flicker   bool
 }
 
-var (
-	styles     []lipgloss.Style
-	styleCache []string
-)
+var styleCache []string
 
 var palettes = map[string][]string{
+	"acid_colorful": {},
+	"tty": {
+		// Heat 0: Black (Background)
+		"0",
+		// Heat 1-5: Bright Black (Gray/Smoke)
+		"8", "8", "8", "8", "8",
+		// Heat 6-12: Red (Outer Flame)
+		"1", "1", "1", "1", "1", "1", "1",
+		// Heat 13-20: Bright Red (Inner Flame)
+		"9", "9", "9", "9", "9", "9", "9", "9",
+		// Heat 21-28: Yellow (Core)
+		"3", "3", "3", "3", "3", "3", "3", "3",
+		// Heat 29-33: Bright Yellow (Intense Core)
+		"11", "11", "11", "11", "11",
+		// Heat 34-36: Bright White (Source)
+		"15", "15", "15",
+	},
 	"red": {
 		"#070707", "#1f0707", "#2f0907", "#470907", "#570f07", "#671707", "#771707",
 		"#8f2707", "#9f2f07", "#af3f07", "#bf4707", "#c74707", "#df4f07", "#df5707",
@@ -49,6 +63,14 @@ var palettes = map[string][]string{
 		"#47a347", "#5cc75c", "#70eb70", "#85ff85", "#99ff99", "#adffad", "#c2ffc2",
 		"#d6ffd6", "#ebffeb", "#f0fff0", "#f5fff5", "#fafffa", "#fbfffb", "#fdfffd",
 		"#fefffe", "#ffffff",
+	},
+	"purple": {
+		"#000000", "#05000a", "#0a0014", "#0f001e", "#140028", "#1a0032", "#21003c",
+		"#2b0046", "#350050", "#3f005a", "#490064", "#53006e", "#5d0078", "#670082",
+		"#71008c", "#7b0096", "#8500a0", "#8f00aa", "#9900b4", "#a300be", "#ad00c8",
+		"#b700d2", "#c100dc", "#cb00e6", "#d500f0", "#df00fa", "#e90aff", "#ed1eff",
+		"#f132ff", "#f546ff", "#f95aff", "#fd6eff", "#ff82ff", "#ff96ff", "#ffafff",
+		"#ffc3ff", "#ffffff",
 	},
 	"gray": {
 		"#000000", "#0a0a0a", "#141414", "#1e1e1e", "#282828", "#323232", "#3c3c3c",
@@ -222,7 +244,7 @@ func (m *model) spreadFire() {
 func main() {
 	charFlag := flag.String("char", "█", "The character used to draw the fire")
 	speedFlag := flag.Duration("speed", 50*time.Millisecond, "Tick speed (e.g. 30ms, 100ms)")
-	paletteFlag := flag.String("palette", "red", "Color palette: red, green, blue, gray")
+	paletteFlag := flag.String("palette", "red", "Color palette: red, green, blue, purple, gray")
 	decayFlag := flag.Float64("decay", 6.0, "Heat decay intensity (higher value, shorter flame)")
 	noFlicker := flag.Bool("no-flicker", false, "Disable flicker")
 
@@ -238,6 +260,15 @@ func main() {
 		}
 		fmt.Printf("Unknown palette '%s'. Available: %s\n", *paletteFlag, strings.Join(available, ", "))
 		os.Exit(1)
+	}
+
+	if *paletteFlag == "acid_colorful" {
+		colors = make([]string, 37)
+		colorRnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+		for i := range 37 {
+			colors[i] = fmt.Sprintf("#%06x", colorRnd.Intn(0xffffff))
+		}
 	}
 
 	styleCache = make([]string, len(colors))
