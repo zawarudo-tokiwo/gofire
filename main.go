@@ -133,7 +133,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
-		m.firePixels = make([]int, m.width*m.height)
+		m.firePixels = make([]int, m.width*(m.height+1)) // NOTE: +1 to add an invisible line which will be ignited by igniteSource()
 		m.igniteSource()
 
 	case tickMsg:
@@ -150,7 +150,7 @@ func (m model) View() string {
 		return ""
 	}
 	var s strings.Builder
-	for y := 0; y < m.height-1; y++ {
+	for y := 0; y < m.height; y++ {
 		for x := 0; x < m.width; x++ {
 			idx := y*m.width + x
 			heat := m.firePixels[idx]
@@ -161,7 +161,7 @@ func (m model) View() string {
 				s.WriteString(" ") // No ANSI codes needed for empty space
 			}
 		}
-		if y < m.height-2 {
+		if y < m.height-1 {
 			s.WriteRune('\n')
 		}
 	}
@@ -173,7 +173,7 @@ func (m *model) igniteSource() {
 		return
 	}
 	// Last row of the grid
-	startIdx := (m.height - 1) * m.width
+	startIdx := m.height * m.width
 	for x := 0; x < m.width; x++ {
 		m.firePixels[startIdx+x] = 36 // Max temp
 	}
@@ -181,7 +181,8 @@ func (m *model) igniteSource() {
 
 func (m *model) spreadFire() {
 	for x := 0; x < m.width; x++ {
-		for y := 1; y < m.height; y++ {
+		// NOTE: m.height+1 is including the invisible ignited line
+		for y := 1; y < m.height+1; y++ {
 			srcIndex := y*m.width + x
 			pixelHeat := m.firePixels[srcIndex]
 
@@ -195,7 +196,8 @@ func (m *model) spreadFire() {
 			}
 
 			decay := int(m.rnd.Float64() * m.config.Decay) // Cool pixel by a value from 0 to 6
-
+			// decayRange := int(m.config.Decay) + 1
+			// decay := m.rnd.Intn(decayRange)
 			randomFlicker := 0
 			if m.config.Flicker {
 				randomFlicker = int(m.rnd.Float64()*3.0) - 1
